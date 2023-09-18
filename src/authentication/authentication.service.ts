@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -8,6 +8,7 @@ import { UsersService } from 'src/users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { TokenPayload } from './tokenPayload.interface';
 
+@Injectable()
 export class AuthenticationService {
   constructor(
     private readonly usersService: UsersService,
