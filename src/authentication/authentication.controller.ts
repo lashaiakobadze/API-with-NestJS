@@ -1,6 +1,6 @@
 
 import { Body, Req, Controller, HttpCode, Post, UseGuards, Res, Get } from '@nestjs/common';
-import { Response } from 'express';
+import { response, Response } from 'express';
 import { AuthenticationService } from './authentication.service';
 import RequestWithUser from './requestWithUser.interface';
 import { LocalAuthenticationGuard } from './localAuthentication.guard';
@@ -24,6 +24,9 @@ export class AuthenticationController {
   async logIn(@Req() request: RequestWithUser) {
     const user = request.user;
     user.password = undefined;
+    const cookie = this.authenticationService.getCookieWithJwtToken(user.id);
+    console.log('cookie', cookie);
+    request.res.setHeader('Set-Cookie', cookie)
     return user;
   }
 
