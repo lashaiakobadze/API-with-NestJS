@@ -11,6 +11,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { APP_FILTER } from '@nestjs/core';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 import { PublicFileModule } from './files/public-file.module';
+import { CategoryModule } from './categories/category.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { PublicFileModule } from './files/public-file.module';
     PublicFileModule,
     UsersModule,
     AuthenticationModule,
+    CategoryModule
   ],
   controllers: [AppController],
   providers: [

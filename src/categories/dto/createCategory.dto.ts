@@ -1,7 +1,7 @@
 
 import { IsNumber, IsString, IsNotEmpty, IsOptional } from 'class-validator';
  
-export class UpdateCategoryDto {
+export class CreateCategoryDto {
   @IsNumber()
   @IsOptional()
   id: number;
@@ -12,4 +12,4 @@ export class UpdateCategoryDto {
   name: string;
 }
  
-export default UpdateCategoryDto;
+export default CreateCategoryDto;
