@@ -1,12 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from 'src/users/user.entity';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
 import Post from './post.entity';
-// import * as PostEntity from './post.entity';
-// import { Post } from './post.interface';
+import PostsSearchService from './postsSearch.service';
 
 
 @Injectable()
@@ -17,6 +16,7 @@ export default class PostsService {
   constructor(
     @InjectRepository(Post)
     private postsRepository: Repository<Post>,
+    private postsSearchService: PostsSearchService
   ) {}
 
   getAllPosts() {
@@ -33,17 +33,19 @@ export default class PostsService {
     }
     throw new HttpException('Post not found', HttpStatus.NOT_FOUND);;
   }
-   
+
   async updatePost(id: number, post: UpdatePostDto) {
     await this.postsRepository.update(id, post);
     const updatedPost = await this.postsRepository.find({
       where: { id },
       relations: ['author'],
     });
-    if (updatedPost) {
-      return updatedPost
+
+    if (updatedPost.length) {
+      await this.postsSearchService.update(updatedPost[0]);
+      return updatedPost;
     }
-    throw new HttpException('Post not found', HttpStatus.NOT_FOUND);;
+    throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
   }
 
   async createPost(post: CreatePostDto, user: User) {
@@ -52,7 +54,20 @@ export default class PostsService {
       author: user
     });
     await this.postsRepository.save(newPost);
+    this.postsSearchService.indexPost(newPost);
     return newPost;
+  }
+ 
+  async searchForPosts(text: string) {
+    const results = await this.postsSearchService.search(text);
+    const ids = results.map(result => result.id);
+    if (!ids.length) {
+      return [];
+    }
+    return this.postsRepository
+      .find({
+        where: { id: In(ids) }
+      });
   }
 
   async deletePost(id: number) {
@@ -60,5 +75,6 @@ export default class PostsService {
     if (!deleteResponse.affected) {
       throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
     }
+    await this.postsSearchService.remove(id);
   }
 }

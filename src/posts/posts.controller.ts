@@ -5,13 +5,12 @@ import {
   Get,
   Param,
   Post,
-  Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import PostsService from './posts.service';
 import { CreatePostDto } from './dto/createPost.dto';
-import { UpdatePostDto } from './dto/updatePost.dto';
 import JwtAuthenticationGuard from 'src/authentication/jwt-authentication.guard';
 import { FindOneParams } from 'src/utils/findOneParams';
 import RequestWithUser from 'src/authentication/requestWithUser.interface';
@@ -19,6 +18,14 @@ import RequestWithUser from 'src/authentication/requestWithUser.interface';
 @Controller('posts')
 export default class PostsController {
   constructor(private readonly postsService: PostsService) {}
+
+  @Get()
+  async getPosts(@Query('search') search: string) {
+    if (search) {
+      return this.postsService.searchForPosts(search);
+    }
+    return this.postsService.getAllPosts();
+  }
 
   @Get()
   getAllPosts() {

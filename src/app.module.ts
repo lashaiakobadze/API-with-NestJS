@@ -13,6 +13,7 @@ import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 import { PublicFileModule } from './files/public-file.module';
 import { CategoryModule } from './categories/category.module';
 import { PrivateFilesModule } from './privateFiles/privateFiles.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -39,7 +40,8 @@ import { PrivateFilesModule } from './privateFiles/privateFiles.module';
     UsersModule,
     AuthenticationModule,
     CategoryModule,
-    PrivateFilesModule
+    PrivateFilesModule,
+    SearchModule
   ],
   controllers: [AppController],
   providers: [
