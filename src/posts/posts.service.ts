@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import User from 'src/users/user.entity';
-import { Repository, In } from 'typeorm';
+import { Repository, In, FindManyOptions,MoreThan } from 'typeorm';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
 import Post from './post.entity';
@@ -18,8 +18,29 @@ export default class PostsService {
     private postsSearchService: PostsSearchService, // fix connection to elastic search.
   ) {}
 
-  getAllPosts() {
-    return this.postsRepository.find({ relations: ['author'] });
+
+  async getAllPosts(offset?: number, limit?: number, startId?: number) {
+    const where: FindManyOptions<Post>['where'] = {};
+    let separateCount = 0;
+    if (startId) {
+      where.id = MoreThan(startId);
+      separateCount = await this.postsRepository.count();
+    }
+   
+    const [items, count] = await this.postsRepository.findAndCount({
+      where,
+      relations: ['author'],
+      order: {
+        id: 'ASC'
+      },
+      skip: offset,
+      take: limit
+    });
+   
+    return {
+      items,
+      count: startId ? separateCount : count
+    }
   }
 
   async getPostsWithParagraph(paragraph: string) {
@@ -65,9 +86,9 @@ export default class PostsService {
     return newPost;
   }
 
-  async searchForPosts(text: string) {
-    const results = await this.postsSearchService.search(text);
-    const ids = results.map(result => result.id);
+  async searchForPosts(text: string, offset?: number, limit?: number, startId?: number) {
+    const results = await this.postsSearchService.search(text, offset, limit, startId);
+    const ids = results.results.map(result => result.id);
     if (!ids.length) {
       return [];
     }
