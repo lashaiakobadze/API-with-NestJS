@@ -11,12 +11,13 @@ export default class PostsSearchService {
   constructor(private readonly elasticsearchService: ElasticsearchService) {}
 
   async indexPost(post: Post) {
+    console.log("post", post);
     return this.elasticsearchService.index<PostSearchResult, PostSearchBody>({
       index: this.index,
       body: {
         id: post.id,
         title: post.title,
-        content: post.content,
+        paragraphs: post.paragraphs,
         authorId: post.author.id
       }
     })
@@ -35,7 +36,7 @@ export default class PostsSearchService {
         }
       }
     })
-    console.log("body", body)
+    console.log("body", body);
     const hits = body.hits.hits;
     return hits.map((item) => item._source);
   }
@@ -57,7 +58,7 @@ export default class PostsSearchService {
     const newBody: PostSearchBody = {
       id: post.id,
       title: post.title,
-      content: post.content,
+      paragraphs: post.paragraphs,
       authorId: post.author.id
     }
  

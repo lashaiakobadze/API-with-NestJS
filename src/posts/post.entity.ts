@@ -18,8 +18,8 @@ class Post {
   @Column()
   public title: string;
 
-  @Column()
-  public content: string;
+  @Column("simple-array")
+  public paragraphs: string[];
 
   @Column({ nullable: true })
   public category?: string;

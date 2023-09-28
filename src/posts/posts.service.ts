@@ -7,7 +7,6 @@ import { UpdatePostDto } from './dto/updatePost.dto';
 import Post from './post.entity';
 import PostsSearchService from './postsSearch.service';
 
-
 @Injectable()
 export default class PostsService {
   private lastPostId = 0;
@@ -16,13 +15,20 @@ export default class PostsService {
   constructor(
     @InjectRepository(Post)
     private postsRepository: Repository<Post>,
-    private postsSearchService: PostsSearchService
+    private postsSearchService: PostsSearchService, // fix connection to elastic search.
   ) {}
 
   getAllPosts() {
     return this.postsRepository.find({ relations: ['author'] });
   }
-   
+
+  async getPostsWithParagraph(paragraph: string) {
+    return this.postsRepository.query(
+      'SELECT * from post WHERE $1 = ANY(paragraphs)',
+      [paragraph],
+    );
+  }
+
   async getPostById(id: number) {
     const post = await this.postsRepository.find({
       where: { id },
@@ -31,7 +37,7 @@ export default class PostsService {
     if (post) {
       return post;
     }
-    throw new HttpException('Post not found', HttpStatus.NOT_FOUND);;
+    throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
   }
 
   async updatePost(id: number, post: UpdatePostDto) {
@@ -42,7 +48,7 @@ export default class PostsService {
     });
 
     if (updatedPost.length) {
-      await this.postsSearchService.update(updatedPost[0]);
+      // await this.postsSearchService.update(updatedPost[0]);
       return updatedPost;
     }
     throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
@@ -51,23 +57,23 @@ export default class PostsService {
   async createPost(post: CreatePostDto, user: User) {
     const newPost = await this.postsRepository.create({
       ...post,
-      author: user
+      author: user,
     });
     await this.postsRepository.save(newPost);
-    this.postsSearchService.indexPost(newPost);
+    // this.postsSearchService.indexPost(newPost);
+
     return newPost;
   }
- 
+
   async searchForPosts(text: string) {
     const results = await this.postsSearchService.search(text);
     const ids = results.map(result => result.id);
     if (!ids.length) {
       return [];
     }
-    return this.postsRepository
-      .find({
-        where: { id: In(ids) }
-      });
+    return this.postsRepository.find({
+      where: { id: In(ids) },
+    });
   }
 
   async deletePost(id: number) {
@@ -75,6 +81,6 @@ export default class PostsService {
     if (!deleteResponse.affected) {
       throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
     }
-    await this.postsSearchService.remove(id);
+    // await this.postsSearchService.remove(id);
   }
 }
