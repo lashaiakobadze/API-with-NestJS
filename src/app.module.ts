@@ -15,6 +15,7 @@ import { CategoryModule } from './categories/category.module';
 import { PrivateFilesModule } from './privateFiles/privateFiles.module';
 import { SearchModule } from './search/search.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -47,7 +48,8 @@ import { SubscribersModule } from './subscribers/subscribers.module';
     CategoryModule,
     PrivateFilesModule,
     SearchModule,
-    SubscribersModule
+    SubscribersModule,
+    CommentsModule
   ],
   controllers: [AppController],
   providers: [

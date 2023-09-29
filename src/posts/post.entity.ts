@@ -6,10 +6,11 @@ import {
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 import User from '../users/user.entity';
 import Category from '../categories/category.entity';
-
+import Comment from '../comments/comment.entity';
 @Entity()
 class Post {
   @PrimaryGeneratedColumn()
@@ -18,7 +19,7 @@ class Post {
   @Column()
   public title: string;
 
-  @Column("simple-array")
+  @Column('simple-array')
   public paragraphs: string[];
 
   @Column({ nullable: true })
@@ -31,6 +32,9 @@ class Post {
   @ManyToMany(() => Category)
   @JoinTable()
   public categories: Category[];
+
+  @OneToMany(() => Comment, (comment: Comment) => comment.post)
+  public comments: Comment[];
 }
 
 export default Post;
