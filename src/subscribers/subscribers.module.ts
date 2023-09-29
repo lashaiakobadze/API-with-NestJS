@@ -1,24 +1,25 @@
-
 import { Module } from '@nestjs/common';
+import SubscribersController from './subscribers.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
-import SubscribersController from './subscribers.controller';
+import { join } from "path";
  
 @Module({
   imports: [ConfigModule],
   controllers: [SubscribersController],
   providers: [
     {
-      provide: 'SUBSCRIBERS_SERVICE',
-      useFactory: (configService: ConfigService) => (
-        ClientProxyFactory.create({
-          transport: Transport.TCP,
+      provide: 'SUBSCRIBERS_PACKAGE',
+      useFactory: (configService: ConfigService) => {
+        return ClientProxyFactory.create({
+          transport: Transport.GRPC,
           options: {
-            host: configService.get('SUBSCRIBERS_SERVICE_HOST'),
-            port: configService.get('SUBSCRIBERS_SERVICE_PORT'),
-          }
+            package: 'subscribers',
+            protoPath: join(process.cwd(), 'src/subscribers/subscribers.proto'),
+            url: configService.get('GRPC_CONNECTION_URL')
+          },
         })
-      ),
+      },
       inject: [ConfigService],
     }
   ],
