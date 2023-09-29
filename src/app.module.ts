@@ -14,6 +14,7 @@ import { PublicFileModule } from './files/public-file.module';
 import { CategoryModule } from './categories/category.module';
 import { PrivateFilesModule } from './privateFiles/privateFiles.module';
 import { SearchModule } from './search/search.module';
+import { SubscribersModule } from './subscribers/subscribers.module';
 
 @Module({
   imports: [
@@ -45,7 +46,8 @@ import { SearchModule } from './search/search.module';
     AuthenticationModule,
     CategoryModule,
     PrivateFilesModule,
-    SearchModule
+    SearchModule,
+    SubscribersModule
   ],
   controllers: [AppController],
   providers: [
