@@ -1,3 +1,4 @@
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
@@ -5,10 +6,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { ExcludeNullInterceptor } from './utils/excludeNull.interceptor';
 import { ConfigService } from '@nestjs/config';
 import { config } from 'aws-sdk';
+import { runInCluster } from './utils/runInCluster';
  
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true
+  }));
   app.useGlobalInterceptors(new ExcludeNullInterceptor());
   app.use(cookieParser());
  
@@ -21,4 +25,4 @@ async function bootstrap() {
  
   await app.listen(3000);
 }
-bootstrap();
+runInCluster(bootstrap);
