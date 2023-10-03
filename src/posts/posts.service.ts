@@ -1,11 +1,14 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import User from 'src/users/user.entity';
 import { Repository, In, FindManyOptions,MoreThan } from 'typeorm';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
 import Post from './post.entity';
 import PostsSearchService from './postsSearch.service';
+import { GET_POSTS_CACHE_KEY } from './postsCacheKey.constant';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export default class PostsService {
@@ -16,8 +19,17 @@ export default class PostsService {
     @InjectRepository(Post)
     private postsRepository: Repository<Post>,
     private postsSearchService: PostsSearchService, // fix connection to elastic search.
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
+  async clearCache() {
+    const keys: string[] = await this.cacheManager.store.keys();
+    keys.forEach((key) => {
+      if (key.startsWith(GET_POSTS_CACHE_KEY)) {
+        this.cacheManager.del(key);
+      }
+    })
+  }
 
   async getAllPosts(offset?: number, limit?: number, startId?: number) {
     const where: FindManyOptions<Post>['where'] = {};
@@ -70,6 +82,7 @@ export default class PostsService {
 
     if (updatedPost.length) {
       // await this.postsSearchService.update(updatedPost[0]);
+      await this.clearCache();
       return updatedPost;
     }
     throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
@@ -81,6 +94,7 @@ export default class PostsService {
       author: user,
     });
     await this.postsRepository.save(newPost);
+    await this.clearCache();
     // this.postsSearchService.indexPost(newPost);
 
     return newPost;
@@ -103,5 +117,6 @@ export default class PostsService {
       throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
     }
     // await this.postsSearchService.remove(id);
+    await this.clearCache();
   }
 }
