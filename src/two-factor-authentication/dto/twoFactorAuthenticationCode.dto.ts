@@ -1,8 +1,9 @@
 
-import { IsEmail } from 'class-validator';
+import { IsNumber } from 'class-validator';
  
 export class TwoFactorAuthenticationCodeDto {
-  twoFactorAuthenticationCode: string;
+  @IsNumber()
+  twoFactorAuthenticationCode: number;
 }
  
 export default TwoFactorAuthenticationCodeDto;
