@@ -19,6 +19,7 @@ import { SubscribersModule } from './subscribers/subscribers.module';
 import { CommentsModule } from './comments/comments.module';
 import { EmailModule } from './email/email.module';
 import { ChatModule } from './chat/chat.module';
+import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-factor-authentication.module';
 
 @Module({
   imports: [
@@ -60,7 +61,8 @@ import { ChatModule } from './chat/chat.module';
     SubscribersModule,
     CommentsModule,
     EmailModule,
-    ChatModule
+    ChatModule,
+    TwoFactorAuthenticationModule
   ],
   controllers: [AppController],
   providers: [

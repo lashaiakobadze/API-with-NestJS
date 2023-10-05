@@ -9,5 +9,6 @@ import Message from './message.entity';
   imports: [AuthenticationModule, TypeOrmModule.forFeature([Message])],
   controllers: [],
   providers: [ChatGateway, ChatService],
+  exports: [ChatService]
 })
 export class ChatModule {}

@@ -94,7 +94,7 @@ export default class PostsService {
       author: user,
     });
     await this.postsRepository.save(newPost);
-    await this.clearCache();
+    // await this.clearCache();
     // this.postsSearchService.indexPost(newPost);
 
     return newPost;

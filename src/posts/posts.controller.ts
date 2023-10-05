@@ -18,6 +18,7 @@ import { FindOneParams } from 'src/utils/findOneParams';
 import RequestWithUser from 'src/authentication/requestWithUser.interface';
 import { PaginationParams } from 'src/utils/types/pagination-params.dto';
 import { GET_POSTS_CACHE_KEY } from './postsCacheKey.constant';
+import JwtTwoFactorGuard from 'src/authentication/jwt-two-factor.guard';
 
 @Controller('posts')
 export default class PostsController {
@@ -49,7 +50,8 @@ export default class PostsController {
 
 
   @Post()
-  @UseGuards(JwtAuthenticationGuard)
+  // @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(JwtTwoFactorGuard)
   async createPost(@Body() post: CreatePostDto, @Req() req: RequestWithUser) {
     return this.postsService.createPost(post, req.user);
   }
