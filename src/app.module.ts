@@ -18,6 +18,7 @@ import { SearchModule } from './search/search.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
 import { CommentsModule } from './comments/comments.module';
 import { EmailModule } from './email/email.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -58,7 +59,8 @@ import { EmailModule } from './email/email.module';
     SearchModule,
     SubscribersModule,
     CommentsModule,
-    EmailModule
+    EmailModule,
+    ChatModule
   ],
   controllers: [AppController],
   providers: [
