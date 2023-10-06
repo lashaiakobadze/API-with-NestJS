@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService  } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
 import { ScheduleModule } from '@nestjs/schedule';
+import { BullModule } from '@nestjs/bull';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -20,6 +21,7 @@ import { CommentsModule } from './comments/comments.module';
 import { EmailModule } from './email/email.module';
 import { ChatModule } from './chat/chat.module';
 import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-factor-authentication.module';
+import { OptimizeModule } from './optimize/optimize.module';
 
 @Module({
   imports: [
@@ -50,6 +52,16 @@ import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-f
         EMAIL_PASSWORD: Joi.string().required(),
       }),
     }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get('REDIS_HOST'),
+          port: Number(configService.get('REDIS_PORT')),
+        },
+      }),
+      inject: [ConfigService],
+    }),
     DatabaseModule,
     PostsModule,
     PublicFileModule,
@@ -62,7 +74,8 @@ import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-f
     CommentsModule,
     EmailModule,
     ChatModule,
-    TwoFactorAuthenticationModule
+    TwoFactorAuthenticationModule,
+    OptimizeModule
   ],
   controllers: [AppController],
   providers: [
