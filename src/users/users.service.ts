@@ -33,6 +33,12 @@ export class UsersService {
     );
   }
 
+  markPhoneNumberAsConfirmed(userId: number) {
+    return this.usersRepository.update({ id: userId }, {
+      isPhoneNumberConfirmed: true
+    });
+  }
+
   async turnOnTwoFactorAuthentication(userId: number) {
     return this.usersRepository.update(userId, {
       isTwoFactorAuthenticationEnabled: true,

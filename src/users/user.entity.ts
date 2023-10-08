@@ -9,9 +9,6 @@ import PrivateFile from 'src/privateFiles/privateFile.entity';
 class User {
   @PrimaryGeneratedColumn()
   public id?: number;
-  
-  @Column({ default: false })
-  public isEmailConfirmed: boolean;
 
   @Column({ default: false })
   public isTwoFactorAuthenticationEnabled: boolean;
@@ -21,6 +18,17 @@ class User {
 
   @Column({ unique: true })
   public email: string;
+
+  @Column({ default: false })
+  public isEmailConfirmed: boolean;
+
+  @Column({
+    nullable: true
+  })
+  public phoneNumber: string;
+  
+  @Column({ default: false })
+  public isPhoneNumberConfirmed: boolean;
 
   @Column({
     nullable: true

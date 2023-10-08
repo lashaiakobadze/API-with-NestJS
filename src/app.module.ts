@@ -23,6 +23,7 @@ import { ChatModule } from './chat/chat.module';
 import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-factor-authentication.module';
 import { OptimizeModule } from './optimize/optimize.module';
 import { EmailConfirmationModule } from './emailConfirmation/emailConfirmation.module';
+import { SmsModule } from './sms/sms.module';
 
 @Module({
   imports: [
@@ -55,6 +56,10 @@ import { EmailConfirmationModule } from './emailConfirmation/emailConfirmation.m
         JWT_VERIFICATION_TOKEN_SECRET: Joi.string().required(),
         JWT_VERIFICATION_TOKEN_EXPIRATION_TIME: Joi.string().required(),
         EMAIL_CONFIRMATION_URL: Joi.string().required(),
+        TWILIO_ACCOUNT_SID: Joi.string().required(),
+        TWILIO_AUTH_TOKEN: Joi.string().required(),
+        TWILIO_VERIFICATION_SERVICE_SID: Joi.string().required(),
+        TWILIO_SENDER_PHONE_NUMBER: Joi.string().required(),
       }),
     }),
     BullModule.forRootAsync({
@@ -82,6 +87,7 @@ import { EmailConfirmationModule } from './emailConfirmation/emailConfirmation.m
     TwoFactorAuthenticationModule,
     OptimizeModule,
     EmailConfirmationModule,
+    SmsModule,
   ],
   controllers: [AppController],
   providers: [
