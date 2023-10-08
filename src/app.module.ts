@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService  } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BullModule } from '@nestjs/bull';
@@ -22,6 +22,7 @@ import { EmailModule } from './email/email.module';
 import { ChatModule } from './chat/chat.module';
 import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-factor-authentication.module';
 import { OptimizeModule } from './optimize/optimize.module';
+import { EmailConfirmationModule } from './emailConfirmation/emailConfirmation.module';
 
 @Module({
   imports: [
@@ -50,7 +51,10 @@ import { OptimizeModule } from './optimize/optimize.module';
         EMAIL_SERVICE: Joi.string().required(),
         EMAIL_USER: Joi.string().required(),
         EMAIL_PASSWORD: Joi.string().required(),
-        SESSION_SECRET: Joi.string().required()
+        SESSION_SECRET: Joi.string().required(),
+        JWT_VERIFICATION_TOKEN_SECRET: Joi.string().required(),
+        JWT_VERIFICATION_TOKEN_EXPIRATION_TIME: Joi.string().required(),
+        EMAIL_CONFIRMATION_URL: Joi.string().required(),
       }),
     }),
     BullModule.forRootAsync({
@@ -76,7 +80,8 @@ import { OptimizeModule } from './optimize/optimize.module';
     EmailModule,
     ChatModule,
     TwoFactorAuthenticationModule,
-    OptimizeModule
+    OptimizeModule,
+    EmailConfirmationModule,
   ],
   controllers: [AppController],
   providers: [

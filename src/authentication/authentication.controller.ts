@@ -20,26 +20,35 @@ import { UsersService } from 'src/users/users.service';
 import JwtRefreshGuard from './jwt-refresh.guard';
 import { LogInWithCredentialsGuard } from './logInWithCredentialsGuard';
 import { CookieAuthenticationGuard } from './cookieAuthentication.guard';
+import { EmailConfirmationService } from 'src/emailConfirmation/emailConfirmation.service';
 
 @Controller('authentication')
 @UseInterceptors(ClassSerializerInterceptor)
 export class AuthenticationController {
-  constructor(private readonly authenticationService: AuthenticationService, private usersService: UsersService,) {}
+  constructor(
+    private readonly authenticationService: AuthenticationService,
+    private readonly emailConfirmationService: EmailConfirmationService,
+    private usersService: UsersService,
+  ) {}
 
   @Post('register')
   async register(@Body() registrationData: RegisterDto) {
-    return this.authenticationService.register(registrationData);
+    const user = await this.authenticationService.register(registrationData);
+    // await this.emailConfirmationService.sendVerificationLink(
+    //   registrationData.email,
+    // );
+    return user;
   }
 
   @UseGuards(JwtRefreshGuard)
   @Get('refresh')
   refresh(@Req() request: RequestWithUser) {
-    const accessTokenCookie = this.authenticationService.getCookieWithJwtAccessToken(request.user.id);
- 
+    const accessTokenCookie =
+      this.authenticationService.getCookieWithJwtAccessToken(request.user.id);
+
     request.res.setHeader('Set-Cookie', accessTokenCookie);
     return request.user;
   }
-
 
   @HttpCode(200)
   // @UseGuards(LocalAuthenticationGuard)
@@ -52,26 +61,25 @@ export class AuthenticationController {
     //   cookie: refreshTokenCookie,
     //   token: refreshToken
     // } = this.authenticationService.getCookieWithJwtRefreshToken(user.id);
- 
+
     // await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
- 
+
     // request.res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]);
- 
+
     // if (user.isTwoFactorAuthenticationEnabled) {
     //   return;
     // }
- 
+
     // return user;
     return request.user;
   }
- 
 
   // @UseGuards(JwtAuthenticationGuard)
   @UseGuards(CookieAuthenticationGuard)
   @Post('log-out')
   @HttpCode(200)
   async logOut(@Req() request: RequestWithUser, @Res() response: Response) {
-    request.logOut((err) => {
+    request.logOut(err => {
       if (err) {
         // Handle the error here, if needed.
         return response.status(500).send('Error logging out');

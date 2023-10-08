@@ -10,12 +10,14 @@ import { JwtRefreshTokenStrategy } from './jwt-refresh-token.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtTwoFactorStrategy } from './jwt-two-factor.strategy';
 import { LocalSerializer } from 'src/utils/local.serializer';
+import { EmailConfirmationModule } from 'src/emailConfirmation/emailConfirmation.module';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
     ConfigModule,
+    EmailConfirmationModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

@@ -9,6 +9,9 @@ import PrivateFile from 'src/privateFiles/privateFile.entity';
 class User {
   @PrimaryGeneratedColumn()
   public id?: number;
+  
+  @Column({ default: false })
+  public isEmailConfirmed: boolean;
 
   @Column({ default: false })
   public isTwoFactorAuthenticationEnabled: boolean;

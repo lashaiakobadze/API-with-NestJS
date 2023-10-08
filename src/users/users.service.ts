@@ -24,15 +24,24 @@ export class UsersService {
     private connection: Connection,
   ) {}
 
+  async markEmailAsConfirmed(email: string) {
+    return this.usersRepository.update(
+      { email },
+      {
+        isEmailConfirmed: true,
+      },
+    );
+  }
+
   async turnOnTwoFactorAuthentication(userId: number) {
     return this.usersRepository.update(userId, {
-      isTwoFactorAuthenticationEnabled: true
+      isTwoFactorAuthenticationEnabled: true,
     });
   }
 
   async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
     return this.usersRepository.update(userId, {
-      twoFactorAuthenticationSecret: secret
+      twoFactorAuthenticationSecret: secret,
     });
   }
 
