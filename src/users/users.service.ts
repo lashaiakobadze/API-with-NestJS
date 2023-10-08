@@ -24,6 +24,17 @@ export class UsersService {
     private connection: Connection,
   ) {}
 
+  async createWithGoogle(email: string, name: string) {
+ 
+    const newUser = await this.usersRepository.create({
+      email,
+      name,
+      isRegisteredWithGoogle: true
+    });
+    await this.usersRepository.save(newUser);
+    return newUser;
+  }
+
   async markEmailAsConfirmed(email: string) {
     return this.usersRepository.update(
       { email },

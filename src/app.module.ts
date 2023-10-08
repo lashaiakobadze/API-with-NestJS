@@ -24,6 +24,7 @@ import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-f
 import { OptimizeModule } from './optimize/optimize.module';
 import { EmailConfirmationModule } from './emailConfirmation/emailConfirmation.module';
 import { SmsModule } from './sms/sms.module';
+import { GoogleAuthenticationModule } from './googleAuthentication/googleAuthentication.module';
 
 @Module({
   imports: [
@@ -60,6 +61,8 @@ import { SmsModule } from './sms/sms.module';
         TWILIO_AUTH_TOKEN: Joi.string().required(),
         TWILIO_VERIFICATION_SERVICE_SID: Joi.string().required(),
         TWILIO_SENDER_PHONE_NUMBER: Joi.string().required(),
+        GOOGLE_AUTH_CLIENT_ID: Joi.string().required(),
+        GOOGLE_AUTH_CLIENT_SECRET: Joi.string().required(),
       }),
     }),
     BullModule.forRootAsync({
@@ -88,6 +91,7 @@ import { SmsModule } from './sms/sms.module';
     OptimizeModule,
     EmailConfirmationModule,
     SmsModule,
+    GoogleAuthenticationModule
   ],
   controllers: [AppController],
   providers: [

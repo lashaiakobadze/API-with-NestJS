@@ -36,10 +36,13 @@ class User {
   @Exclude()
   public currentHashedRefreshToken?: string;
 
-  @Column()
-  public name: string;
+  @Column({ default: false })
+  public isRegisteredWithGoogle: boolean;
 
   @Column()
+  public name: string;
+  
+  @Column({ nullable: true })
   @Exclude()
   public password: string;
 
