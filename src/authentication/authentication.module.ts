@@ -9,6 +9,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtRefreshTokenStrategy } from './jwt-refresh-token.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtTwoFactorStrategy } from './jwt-two-factor.strategy';
+import { LocalSerializer } from 'src/utils/local.serializer';
 
 @Module({
   imports: [
@@ -31,7 +32,8 @@ import { JwtTwoFactorStrategy } from './jwt-two-factor.strategy';
     LocalStrategy,
     JwtStrategy,
     JwtRefreshTokenStrategy,
-    JwtTwoFactorStrategy
+    JwtTwoFactorStrategy,
+    LocalSerializer
   ],
   controllers: [AuthenticationController],
   exports: [AuthenticationService]

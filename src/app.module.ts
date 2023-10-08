@@ -50,6 +50,7 @@ import { OptimizeModule } from './optimize/optimize.module';
         EMAIL_SERVICE: Joi.string().required(),
         EMAIL_USER: Joi.string().required(),
         EMAIL_PASSWORD: Joi.string().required(),
+        SESSION_SECRET: Joi.string().required()
       }),
     }),
     BullModule.forRootAsync({
